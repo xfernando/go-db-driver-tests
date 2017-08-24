@@ -1,9 +1,29 @@
 version: '3'
 services:
+  tests:
+    container_name: godbtests
+    build: ./
+    networks:
+      - go-db-tests-network
+
   mysql:
+    container_name: godbtests-mysql
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: gosqltest
-    ports:
-      - 3306:3306
+    networks:
+      - go-db-tests-network
+
+  postgres:
+    container_name: godbtests-postgres
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: gosqltest
+    networks:
+      - go-db-tests-network
+
+networks:
+  go-db-tests-network:
+    driver: bridge
