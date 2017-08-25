@@ -9,7 +9,7 @@ Progress:
 
 MySQL drivers tested: 2 out of 2
 
-Postgres drivers teste: 2 out of 3
+Postgres drivers tested: 2 out of 3
 
 ## Usage
 
