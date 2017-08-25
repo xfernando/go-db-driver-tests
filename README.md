@@ -1,4 +1,4 @@
-![](img/hugging-docker.png)[1]
+<img src="img/hugging-docker.png" width="140px" height="195px">[1]
 
 ## go-db-driver-tests
 
