@@ -1,4 +1,4 @@
-<img src="hugging-docker.svg" width="40%">[1]
+<img src="img/hugging-docker.png" width="30%">[1]
 
 ## go-db-driver-tests
 
