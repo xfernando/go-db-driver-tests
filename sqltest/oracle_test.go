@@ -11,12 +11,7 @@ var (
 	oracle = &oracleDB{}
 )
 
-type oracleDB struct {
-	driver           string
-	connectionString string
-	db               *sql.DB
-	t                *testing.T
-}
+type oracleDB database
 
 func (o *oracleDB) DB() *sql.DB {
 	return o.db

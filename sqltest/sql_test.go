@@ -12,6 +12,13 @@ import (
 
 const TablePrefix = "gosqltest_"
 
+type database struct {
+	driver           string
+	connectionString string
+	db               *sql.DB
+	t                *testing.T
+}
+
 type Tester interface {
 	RunTest(*testing.T, func(Tester))
 	SQLBlobParam(size int) string

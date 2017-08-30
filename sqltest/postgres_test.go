@@ -20,12 +20,7 @@ var (
 	pgx = &postgresDB{driver: "pgx", connectionString: "user=postgres password=root host=postgres port=5432 database=gosqltest sslmode=disable"}
 )
 
-type postgresDB struct {
-	driver           string
-	connectionString string
-	db               *sql.DB
-	t                *testing.T
-}
+type postgresDB database
 
 func (p *postgresDB) DB() *sql.DB {
 	return p.db
@@ -82,7 +77,6 @@ func TestPostgresDrivers(t *testing.T) {
 		t.Fatalf("skipping tests; Postgres not responding on postgres:5432 after 3 tries")
 		return
 	}
-	// defer stopContainer(t, "postgres")
 
 	t.Run("pgx: TXQuery", testPGXTxQuery)
 	t.Run("pgx: Blobs", testPGXBlobs)

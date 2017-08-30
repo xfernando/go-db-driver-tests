@@ -18,12 +18,7 @@ var (
 	myMysqlDB Tester = &mysqlDB{driver: "mymysql", connectionString: "tcp:mysql:3306*gosqltest/root/root"}
 )
 
-type mysqlDB struct {
-	driver           string
-	connectionString string
-	db               *sql.DB
-	t                *testing.T
-}
+type mysqlDB database
 
 func (m *mysqlDB) SQLBlobParam(size int) string {
 	return fmt.Sprintf("VARBINARY(%d)", size)
@@ -76,7 +71,6 @@ func TestMySQLDrivers(t *testing.T) {
 		t.Fatalf("skipping tests; MySQL not responding on mysql:3306 after 3 tries")
 		return
 	}
-	// defer stopContainer(t, "mysql")
 
 	t.Run("gomysql: TXQuery", testGoMySQLTxQuery)
 	t.Run("gomysql: Blobs", testGoMySQLBlobs)
