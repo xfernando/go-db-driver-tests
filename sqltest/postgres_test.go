@@ -12,12 +12,18 @@ import (
 
 var (
 	// github.com/lib/pq
-	pq = &postgresDB{driver: "postgres", connectionString: "user=postgres password=root host=postgres dbname=gosqltest sslmode=disable"}
+	pq = &postgresDB{
+		driver:           "postgres",
+		driverPkg:        "github.com/lib/pq",
+		connectionString: "user=postgres password=root host=postgres dbname=gosqltest sslmode=disable"}
 	// github.com/jbarham/gopgsqldriver
 	// not going to test this now, it registers as postgres, conflicting with the previous driver
 	gopgsql = &postgresDB{driver: "postgres", connectionString: "user=postgres password=root dbname=gosqltest sslmode=disable"}
 	// github.com/jackc/pgx
-	pgx = &postgresDB{driver: "pgx", connectionString: "user=postgres password=root host=postgres port=5432 database=gosqltest sslmode=disable"}
+	pgx = &postgresDB{
+		driver:           "pgx",
+		driverPkg:        "github.com/jackc/pgx",
+		connectionString: "user=postgres password=root host=postgres port=5432 database=gosqltest sslmode=disable"}
 )
 
 type postgresDB database
@@ -69,7 +75,7 @@ func (p *postgresDB) q(sql string) string {
 func TestPostgresDrivers(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		if !Running("postgres", 5432) {
-			t.Logf("Postgres not running, waiting 60 seconds, try %d", i)
+			//t.Logf("Postgres not running, waiting 60 seconds, try %d", i)
 			<-time.After(60 * time.Second)
 		}
 	}
@@ -78,11 +84,13 @@ func TestPostgresDrivers(t *testing.T) {
 		return
 	}
 
+	t.Logf("%s revision: %s", pgx.driverPkg, gitRevision(t, pgx.driverPkg))
 	t.Run("pgx: TXQuery", testPGXTxQuery)
 	t.Run("pgx: Blobs", testPGXBlobs)
 	t.Run("pgx: ManyQueryRow", testPGXPreparedStmt)
 	t.Run("pgx: PreparedStmt", testPGXManyQueryRow)
 
+	t.Logf("%s revision: %s", pq.driverPkg, gitRevision(t, pq.driverPkg))
 	t.Run("pq: TXQuery", testPQTxQuery)
 	t.Run("pq: Blobs", testPQBlobs)
 	t.Run("pq: ManyQueryRow", testPQManyQueryRow)

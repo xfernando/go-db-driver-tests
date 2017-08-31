@@ -13,9 +13,15 @@ import (
 
 var (
 	// github.com/go-sql-driver/mysq
-	goMysqlDB Tester = &mysqlDB{driver: "mysql", connectionString: "root:root@tcp(mysql:3306)/gosqltest"}
+	goMysqlDB = &mysqlDB{
+		driver:           "mysql",
+		driverPkg:        "github.com/go-sql-driver/mysql",
+		connectionString: "root:root@tcp(mysql:3306)/gosqltest"}
 	// github.com/ziutek/mymysql/godrv
-	myMysqlDB Tester = &mysqlDB{driver: "mymysql", connectionString: "tcp:mysql:3306*gosqltest/root/root"}
+	myMysqlDB = &mysqlDB{
+		driver:           "mymysql",
+		driverPkg:        "github.com/ziutek/mymysql",
+		connectionString: "tcp:mysql:3306*gosqltest/root/root"}
 )
 
 type mysqlDB database
@@ -63,7 +69,7 @@ func (m *mysqlDB) RunTest(t *testing.T, fn func(Tester)) {
 func TestMySQLDrivers(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		if !Running("mysql", 3306) {
-			t.Logf("Try %d: MySQL not running. Waiting 60 secs for container initialization.", i)
+			//t.Logf("Try %d: MySQL not running. Waiting 60 secs for container initialization.", i)
 			<-time.After(60 * time.Second)
 		}
 	}
@@ -72,11 +78,13 @@ func TestMySQLDrivers(t *testing.T) {
 		return
 	}
 
+	t.Logf("%s revision: %s", goMysqlDB.driverPkg, gitRevision(t, goMysqlDB.driverPkg))
 	t.Run("gomysql: TXQuery", testGoMySQLTxQuery)
 	t.Run("gomysql: Blobs", testGoMySQLBlobs)
 	t.Run("gomysql: ManyQueryRow", testGoMySQLManyQueryRow)
 	t.Run("gomysql: PreparedStmt", testGoMySQLPreparedStmt)
 
+	t.Logf("%s revision: %s", myMysqlDB.driverPkg, gitRevision(t, myMysqlDB.driverPkg))
 	t.Run("mymysql: TXQuery", testMyMySQLTxQuery)
 	t.Run("mymysql: Blobs", testMyMySQLBlobs)
 	t.Run("mymysql: ManyQueryRow", testMyMySQLManyQueryRow)

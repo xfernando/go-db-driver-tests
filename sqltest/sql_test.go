@@ -3,6 +3,7 @@ package sqltest
 import (
 	"database/sql"
 	"fmt"
+	"io/ioutil"
 	"math/rand"
 	"net"
 	"regexp"
@@ -14,6 +15,7 @@ const TablePrefix = "gosqltest_"
 
 type database struct {
 	driver           string
+	driverPkg        string
 	connectionString string
 	db               *sql.DB
 	t                *testing.T
@@ -35,6 +37,15 @@ func Running(host string, port int) bool {
 		return true
 	}
 	return false
+}
+
+func gitRevision(t *testing.T, pkg string) string {
+	b, err := ioutil.ReadFile("/go/src/" + pkg + "/.git/refs/heads/master")
+	if err != nil {
+		t.Logf("Failed to get current git revision for package %s: %v", pkg, err)
+		return ""
+	}
+	return string(b)
 }
 
 func mustExec(t Tester, sql string, args ...interface{}) sql.Result {

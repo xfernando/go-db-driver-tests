@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	oracle = &oracleDB{}
+	oracle = &oracleDB{driver: "goracle", connectionString: "oracle://user:pass@db/"}
 )
 
 type oracleDB database
