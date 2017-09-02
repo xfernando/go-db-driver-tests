@@ -6,4 +6,5 @@ import (
 	_ "github.com/jackc/pgx/stdlib"
 	_ "github.com/lib/pq"
 	_ "github.com/ziutek/mymysql/godrv"
+	//_ "github.com/mattn/go-sqlite3"
 )

@@ -49,6 +49,7 @@ func (m *mysqlDB) RunTest(t *testing.T, fn func(Tester)) {
 		t.Fatalf("error connecting: %v", err)
 	}
 	m.db = db
+	t.Logf("Driver type: %T", db.Driver())
 
 	// Drop all tables in the test database
 	rows, err := db.Query("SHOW TABLES")
