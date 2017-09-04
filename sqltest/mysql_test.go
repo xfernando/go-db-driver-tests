@@ -12,12 +12,10 @@ import (
 )
 
 var (
-	// github.com/go-sql-driver/mysq
 	goMysqlDB = &mysqlDB{
 		driver:           "mysql",
 		driverPkg:        "github.com/go-sql-driver/mysql",
 		connectionString: "root:root@tcp(mysql:3306)/gosqltest"}
-	// github.com/ziutek/mymysql/godrv
 	myMysqlDB = &mysqlDB{
 		driver:           "mymysql",
 		driverPkg:        "github.com/ziutek/mymysql",

@@ -7,23 +7,24 @@ import (
 	"time"
 
 	_ "github.com/jackc/pgx/stdlib"
+	_ "github.com/jbarham/gopgsqldriver"
 	_ "github.com/lib/pq"
 )
 
 var (
-	// github.com/lib/pq
 	pq = &postgresDB{
 		driver:           "postgres",
 		driverPkg:        "github.com/lib/pq",
 		connectionString: "user=postgres password=root host=postgres dbname=gosqltest sslmode=disable"}
-	// github.com/jbarham/gopgsqldriver
-	// not going to test this now, it registers as postgres, conflicting with the previous driver
-	gopgsql = &postgresDB{driver: "postgres", connectionString: "user=postgres password=root dbname=gosqltest sslmode=disable"}
+	// we rename the driver during docker image construction, otherwise it conflicts with the previous one
+	gopg = &postgresDB{driver: "gopgsql",
+		driverPkg:        "github.com/jbarham/gopgsqldriver",
+		connectionString: "user=postgres password=root dbname=gosqltest sslmode=disable"}
 	// github.com/jackc/pgx
 	pgx = &postgresDB{
 		driver:           "pgx",
 		driverPkg:        "github.com/jackc/pgx",
-		connectionString: "user=postgres password=root host=postgres port=5432 database=gosqltest sslmode=disable"}
+		connectionString: "user=postgres password=root host=postgres dbname=gosqltest sslmode=disable"}
 )
 
 type postgresDB database
@@ -43,6 +44,7 @@ func (p *postgresDB) RunTest(t *testing.T, fn func(Tester)) {
 		t.Fatalf("error connecting: %v", err)
 	}
 	p.db = db
+	t.Logf("Driver type: %T", db.Driver())
 
 	// Drop all tables in the test database.
 	rows, err := db.Query("SELECT table_name FROM information_schema.tables WHERE table_name LIKE '" +
@@ -95,6 +97,12 @@ func TestPostgresDrivers(t *testing.T) {
 	t.Run("pq: Blobs", testPQBlobs)
 	t.Run("pq: ManyQueryRow", testPQManyQueryRow)
 	t.Run("pq: PreparedStmt", testPQPreparedStmt)
+
+	t.Logf("%s revision: %s", gopg.driverPkg, gitRevision(t, gopg.driverPkg))
+	t.Run("gopg: TXQuery", testGoPGTxQuery)
+	t.Run("gopg: Blobs", testGoPGBlobs)
+	t.Run("gopg: ManyQueryRow", testGoPGManyQueryRow)
+	t.Run("gopg: PreparedStmt", testGoPGPreparedStmt)
 }
 
 func testPQTxQuery(t *testing.T)      { pq.RunTest(t, testTxQuery) }
@@ -106,3 +114,8 @@ func testPGXTxQuery(t *testing.T)      { pgx.RunTest(t, testTxQuery) }
 func testPGXBlobs(t *testing.T)        { pgx.RunTest(t, testBlobs) }
 func testPGXPreparedStmt(t *testing.T) { pgx.RunTest(t, testPreparedStmt) }
 func testPGXManyQueryRow(t *testing.T) { pgx.RunTest(t, testManyQueryRow) }
+
+func testGoPGTxQuery(t *testing.T)      { gopg.RunTest(t, testTxQuery) }
+func testGoPGBlobs(t *testing.T)        { gopg.RunTest(t, testBlobs) }
+func testGoPGManyQueryRow(t *testing.T) { gopg.RunTest(t, testManyQueryRow) }
+func testGoPGPreparedStmt(t *testing.T) { gopg.RunTest(t, testPreparedStmt) }
