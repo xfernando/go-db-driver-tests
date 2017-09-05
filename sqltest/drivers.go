@@ -8,6 +8,8 @@ import (
 	_ "github.com/jbarham/gopgsqldriver"
 	_ "github.com/lib/pq"
 	//_ "github.com/mattn/go-sqlite3"
+	_ "github.com/denisenkom/go-mssqldb"
+	_ "github.com/minus5/gofreetds"
 	_ "github.com/mxk/go-sqlite/sqlite3"
 	_ "github.com/ziutek/mymysql/godrv"
 )

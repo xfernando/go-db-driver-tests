@@ -19,7 +19,7 @@ var (
 	// we rename the driver during docker image construction, otherwise it conflicts with the previous one
 	gopg = &postgresDB{driver: "gopgsql",
 		driverPkg:        "github.com/jbarham/gopgsqldriver",
-		connectionString: "user=postgres password=root dbname=gosqltest sslmode=disable"}
+		connectionString: "user=postgres password=root host=postgres dbname=gosqltest sslmode=disable"}
 	// github.com/jackc/pgx
 	pgx = &postgresDB{
 		driver:           "pgx",

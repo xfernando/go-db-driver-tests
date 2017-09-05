@@ -24,6 +24,15 @@ services:
     networks:
       - go-db-tests-network
   
+  mssql:
+    container_name: godbtests-mssql
+    image: microsoft/mssql-server-linux
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Gosqldbr00t!
+    networks:
+      - go-db-tests-network
+
 #  oracle:
 #    container_name: godbtests-oracle
 #    image: container-registry.oracle.com/database/standard
