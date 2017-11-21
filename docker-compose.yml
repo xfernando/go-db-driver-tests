@@ -33,6 +33,15 @@ services:
     networks:
       - go-db-tests-network
 
+  firebird:
+    container_name: godbtests-firebird
+    image: jacobalberty/firebird
+    environment:
+      FIREBIRD_USER: root
+      FIREBIRD_PASSWORD: root
+      FIREBIRD_DATABASE: gosqltest
+    networks:
+      - go-db-tests-network
 #  oracle:
 #    container_name: godbtests-oracle
 #    image: container-registry.oracle.com/database/standard
